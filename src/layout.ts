@@ -1,0 +1,389 @@
+export interface ToolPageConfig {
+  route: '/' | '/mp4-to-gif' | '/gif-to-mp4' | '/gif-resizer' | '/gif-speed' | '/gif-optimizer' | '/gif-crop' | '/gif-split' | '/gif-maker' | '/tools' | '/privacy' | '/about' | '/contact' | '/faq' | '/404.html';
+  toolName: string;
+  eyebrow: string;
+  intro: string;
+  heroCopy: string;
+  privacyNote: string;
+  toolHtml: string;
+  howItWorks: Array<{ title: string; description: string }>;
+  features: Array<{ title: string; description: string }>;
+  faq: Array<{ title: string; description: string }>;
+}
+
+const SITE_URL = 'https://www.xczyron.com';
+
+const NAV_LINKS = [
+  { href: '/', label: 'GIF Compressor', icon: 'fa-regular fa-file-image' },
+  { href: '/mp4-to-gif', label: 'MP4 to GIF', icon: 'fa-solid fa-film' },
+  { href: '/privacy', label: 'Privacy', icon: 'fa-solid fa-shield-halved' },
+  { href: '/faq', label: 'FAQ', icon: 'fa-regular fa-circle-question' },
+  { href: '/contact', label: 'Contact', icon: 'fa-regular fa-envelope' }
+];
+
+const TOOL_LINKS = [
+  { href: '/', label: 'GIF Compressor', icon: 'fa-regular fa-file-image', description: 'Compress animated GIFs with real browser-side frame processing.' },
+  { href: '/mp4-to-gif', label: 'MP4 to GIF', icon: 'fa-solid fa-film', description: 'Convert MP4 clips into real animated GIF files.' },
+  { href: '/gif-to-mp4', label: 'GIF to MP4', icon: 'fa-solid fa-video', description: 'Turn animated GIF files into efficient MP4 video output.' },
+  { href: '/gif-resizer', label: 'GIF Resizer', icon: 'fa-solid fa-up-right-and-down-left-from-center', description: 'Resize animated GIFs while keeping valid animated output.' },
+  { href: '/gif-crop', label: 'GIF Cropper', icon: 'fa-solid fa-crop-simple', description: 'Crop GIF frames and export a real cropped animation.' },
+  { href: '/gif-speed', label: 'GIF Speed Changer', icon: 'fa-solid fa-gauge-high', description: 'Speed up or slow down animated GIF timing.' },
+  { href: '/gif-split', label: 'GIF Frame Splitter', icon: 'fa-regular fa-images', description: 'Extract GIF frames as PNG images and ZIP archives.' },
+  { href: '/gif-maker', label: 'GIF Maker', icon: 'fa-solid fa-wand-magic-sparkles', description: 'Create animated GIFs from PNG or JPG image sequences.' },
+  { href: '/gif-optimizer', label: 'Advanced GIF Optimizer', icon: 'fa-solid fa-sliders', description: 'Fine tune GIF size, colors, scale, and frame reduction.' }
+];
+
+function absoluteUrl(path: string): string {
+  return path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`;
+}
+
+function renderNavLinks(currentRoute: string): string {
+  const toolsMenu = `
+    <div class="nav-tools dropdown" data-dropdown>
+      <button class="dropdown-toggle" type="button" aria-expanded="false" aria-controls="tools-menu" data-dropdown-toggle>
+        <i class="fa-solid fa-toolbox" aria-hidden="true"></i>
+        <span>Tools</span>
+      </button>
+      <div class="nav-tools-menu dropdown-menu" id="tools-menu" role="menu" aria-label="GIF tools" data-dropdown-menu>
+        <a href="${absoluteUrl('/tools')}" role="menuitem"${currentRoute === '/tools' ? ' aria-current="page"' : ''}><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span>All Tools</span></a>
+        ${TOOL_LINKS.map(link =>
+          `<a href="${absoluteUrl(link.href)}" role="menuitem"${currentRoute === link.href ? ' aria-current="page"' : ''}>
+            <i class="${link.icon}" aria-hidden="true"></i>
+            <span>${link.label}</span>
+          </a>`
+        ).join('')}
+      </div>
+    </div>
+  `;
+
+  return `${toolsMenu}${NAV_LINKS.map(link =>
+    `<a href="${absoluteUrl(link.href)}"${currentRoute === link.href ? ' aria-current="page"' : ''}>
+      <i class="${link.icon}" aria-hidden="true"></i>
+      <span>${link.label}</span>
+    </a>`
+  ).join('')}`;
+}
+
+function renderHowItWorks(items: Array<{ title: string; description: string }>): string {
+  if (items.length === 0) return '';
+  return `
+    <section id="how-it-works" class="page-section" aria-labelledby="how-it-works-title">
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            <h2 id="how-it-works-title"><i class="fa-solid fa-gears" aria-hidden="true"></i> How it works</h2>
+          </div>
+          <div class="content-grid">
+            ${items.map(item => `
+              <div class="content-card">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderFeatures(items: Array<{ title: string; description: string }>): string {
+  if (items.length === 0) return '';
+  return `
+    <section class="page-section" aria-labelledby="features-title">
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            <h2 id="features-title"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Features</h2>
+          </div>
+          <div class="content-grid">
+            ${items.map(item => `
+              <div class="content-card">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderFaq(items: Array<{ title: string; description: string }>): string {
+  if (items.length === 0) return '';
+  return `
+    <section id="faq" class="page-section" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            <h2 id="faq-title"><i class="fa-regular fa-circle-question" aria-hidden="true"></i> FAQ</h2>
+          </div>
+          <div class="faq-list">
+            ${items.map(item => `
+              <details class="faq-item">
+                <summary>${item.title}</summary>
+                <p>${item.description}</p>
+              </details>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderPrivacySection(note: string): string {
+  return `
+    <section id="privacy" class="page-section" aria-labelledby="privacy-section-title">
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            <h2 id="privacy-section-title"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy</h2>
+          </div>
+          <p class="text-muted">${note}</p>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderHomeToolCards(): string {
+  return `
+    <section class="page-section page-section-muted" aria-labelledby="home-tools-title">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">All GIF Tools</span>
+          <h2 id="home-tools-title">Browser-based tools for common GIF workflows</h2>
+          <p>Choose a tool, process your file locally, preview the result, and download the finished output without server upload.</p>
+        </div>
+        <div class="tools-grid">
+          ${TOOL_LINKS.map(link => `
+            <article class="tool-card compact-tool-card">
+              <div class="tool-card-icon"><i class="${link.icon}" aria-hidden="true"></i></div>
+              <h3>${link.label}</h3>
+              <p>${link.description}</p>
+              <a class="btn btn-secondary secondary-button" href="${absoluteUrl(link.href)}">
+                <span>Open Tool</span>
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </a>
+            </article>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderTrustSection(): string {
+  const items = [
+    { icon: 'fa-solid fa-shield-halved', title: 'Private by design', description: 'Files are processed locally in your browser during normal use.' },
+    { icon: 'fa-solid fa-bolt', title: 'Fast workflows', description: 'Workers keep processing off the main UI thread when possible.' },
+    { icon: 'fa-solid fa-mobile-screen-button', title: 'Responsive layout', description: 'Controls, previews, and cards adapt across phones, tablets, and desktops.' },
+    { icon: 'fa-solid fa-download', title: 'Real outputs', description: 'Tools generate valid GIF, MP4, PNG, or ZIP files instead of fake renamed downloads.' }
+  ];
+
+  return `
+    <section class="page-section" aria-labelledby="trust-title">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Why GIF Tools</span>
+          <h2 id="trust-title">Clean, private, production-ready media utilities</h2>
+          <p>GIF Tools is built for practical browser-based editing with clear status messages and accessible controls.</p>
+        </div>
+        <div class="content-grid feature-grid">
+          ${items.map(item => `
+            <article class="content-card feature-card">
+              <div class="feature-icon"><i class="${item.icon}" aria-hidden="true"></i></div>
+              <h3>${item.title}</h3>
+              <p>${item.description}</p>
+            </article>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderCtaSection(): string {
+  return `
+    <section class="page-section cta-section" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta-card">
+          <div>
+            <span class="eyebrow">Start now</span>
+            <h2 id="cta-title">Open a GIF tool and process your file privately</h2>
+            <p>Use the tools directory to choose compression, conversion, resizing, cropping, speed changes, frame extraction, GIF creation, or optimization.</p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn btn-primary primary-button" href="${absoluteUrl('/tools')}"><i class="fa-solid fa-toolbox" aria-hidden="true"></i><span>View All Tools</span></a>
+            <a class="btn btn-secondary secondary-button" href="${absoluteUrl('/privacy')}"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>Read Privacy</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+export function renderLayout(config: ToolPageConfig): string {
+  const isToolPage = config.howItWorks.length > 0;
+  const isHomePage = config.route === '/';
+
+  return `
+    <div class="site-shell">
+      <!-- ===== HEADER ===== -->
+      <header class="site-header" role="banner">
+        <div class="container topbar">
+          <a class="brand" href="${absoluteUrl('/')}" aria-label="GIF Tools home">
+            <span class="brand-mark" aria-hidden="true">
+              <i class="fa-solid fa-photo-film"></i>
+            </span>
+            <span>GIF Tools</span>
+          </a>
+
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-navigation"
+            aria-label="Toggle navigation menu"
+          >
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+
+          <nav class="topnav" id="site-navigation" aria-label="Primary navigation" data-open="false">
+            ${renderNavLinks(config.route)}
+          </nav>
+        </div>
+      </header>
+
+      <!-- ===== MAIN ===== -->
+      <main id="main-content" class="main-content">
+
+        <!-- Hero -->
+        <section class="hero-section" aria-labelledby="page-title">
+          <div class="container">
+            <div class="hero-grid">
+              <div>
+                <span class="hero-eyebrow">${config.eyebrow}</span>
+                <h1 id="page-title">${config.toolName}</h1>
+                <p class="hero-description">${config.intro}</p>
+                <p class="hero-description">${config.heroCopy}</p>
+                <div class="hero-privacy-note">
+                  <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                  <span>${config.privacyNote}</span>
+                </div>
+                ${isToolPage ? `
+                <div class="hero-actions">
+                  <a class="btn btn-primary primary-button" href="#tool">
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                    <span>Open Tool</span>
+                  </a>
+                  ${isHomePage ? `
+                  <a class="btn btn-secondary secondary-button" href="${absoluteUrl('/tools')}">
+                    <i class="fa-solid fa-toolbox" aria-hidden="true"></i>
+                    <span>Browse Tools</span>
+                  </a>
+                  ` : ''}
+                  <a class="btn btn-secondary secondary-button" href="#how-it-works">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span>Learn How It Works</span>
+                  </a>
+                </div>
+                ` : ''}
+              </div>
+
+              ${isToolPage ? `
+              <div class="hero-card" aria-label="What this tool does">
+                <h2><i class="fa-solid fa-list-check" aria-hidden="true"></i> What this tool does</h2>
+                <ul>
+                  <li><i class="fa-solid fa-check" aria-hidden="true"></i> Runs fully in your browser</li>
+                  <li><i class="fa-solid fa-check" aria-hidden="true"></i> Processes media without server upload</li>
+                  <li><i class="fa-solid fa-check" aria-hidden="true"></i> Outputs a real animated GIF file</li>
+                  <li><i class="fa-solid fa-check" aria-hidden="true"></i> Uses worker-based processing to keep the page responsive</li>
+                </ul>
+              </div>
+              ` : ''}
+            </div>
+          </div>
+        </section>
+
+        ${isHomePage ? renderHomeToolCards() : ''}
+        ${isHomePage ? renderTrustSection() : ''}
+
+        <!-- Tool / Page Content -->
+        ${isToolPage ? `
+        <section id="tool" class="page-section" aria-label="Tool interface">
+          <div class="container">
+            ${config.toolHtml}
+          </div>
+        </section>
+        ` : `
+        <section class="page-section">
+          <div class="container">
+            ${config.toolHtml}
+          </div>
+        </section>
+        `}
+
+        ${renderHowItWorks(config.howItWorks)}
+        ${renderFeatures(config.features)}
+        ${isToolPage ? renderPrivacySection(config.privacyNote) : ''}
+        ${renderFaq(config.faq)}
+        ${isHomePage ? renderCtaSection() : ''}
+
+      </main>
+
+      <!-- ===== FOOTER ===== -->
+      <footer class="site-footer" role="contentinfo">
+        <div class="container footer-inner">
+          <div class="footer-grid">
+
+            <!-- Brand -->
+            <div class="footer-col">
+              <h3><i class="fa-solid fa-photo-film" aria-hidden="true"></i> GIF Tools</h3>
+              <p>Private browser-based tools for compressing, converting, editing, and optimizing GIF files. No upload required during normal use.</p>
+            </div>
+
+            <!-- Tools -->
+            <div class="footer-col">
+              <h3><i class="fa-solid fa-toolbox" aria-hidden="true"></i> Tools</h3>
+              <nav class="footer-nav" aria-label="Footer tools">
+                <a href="${absoluteUrl('/tools')}"><i class="fa-solid fa-toolbox" aria-hidden="true"></i> All Tools</a>
+                ${TOOL_LINKS.map(link => `<a href="${absoluteUrl(link.href)}"><i class="${link.icon}" aria-hidden="true"></i> ${link.label}</a>`).join('')}
+              </nav>
+            </div>
+
+            <!-- Resources -->
+            <div class="footer-col">
+              <h3><i class="fa-solid fa-book-open" aria-hidden="true"></i> Resources</h3>
+              <nav class="footer-nav" aria-label="Footer resources">
+                <a href="${absoluteUrl('/')}"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>
+                <a href="${absoluteUrl('/about')}"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> About</a>
+                <a href="${absoluteUrl('/privacy')}"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy</a>
+                <a href="${absoluteUrl('/faq')}"><i class="fa-regular fa-circle-question" aria-hidden="true"></i> FAQ</a>
+                <a href="${absoluteUrl('/contact')}"><i class="fa-regular fa-envelope" aria-hidden="true"></i> Contact</a>
+              </nav>
+            </div>
+
+            <!-- Local Processing -->
+            <div class="footer-col">
+              <h3><i class="fa-solid fa-user-shield" aria-hidden="true"></i> Local Processing</h3>
+              <p>Your files are processed locally in your browser. No file is uploaded to any server.</p>
+            </div>
+
+          </div>
+
+          <div class="footer-bottom">
+            <p class="footer-credit">
+              Powered by
+              <a href="https://www.xczyron.com/" target="_blank" rel="noreferrer">XCZyron</a>
+              <span>© ${new Date().getFullYear()} GIF Tools</span>
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  `;
+}
